@@ -1,85 +1,14 @@
 #include<iostream>
-#include<stack>
 #include<vector>
 #include<queue>
+
+#include "avl_node.h"
+#include "avl_tree.h"
 using namespace std;
 
 /**
 	AVL树CPP代码实现	
 */
-
-class avl_node{
-	// 定义友元
-	friend class avl_tree;
-
-private:
-	avl_node* left; // 指向左节点 
-	avl_node* right; // 指向右节点
-	int key; // 节点排序大小依据
-	int height; // 节点高度
-	int b_factor; // 平衡因子
-
-public:
-	// 构造函数
-	avl_node(){}
-	avl_node(int key): key(key), height(1), left(nullptr), right(nullptr), b_factor(0) {}
-
-	// 析构函数
-	// 不需要析构函数，因为树类会调用销毁的逻辑。new开辟内存操作是在树类中完成的，节点类中并未new过
-	// ~avl_node() {delete left; delete right; std::cout<<"调用节点的析构函数"<<endl;}
-
-	// get函数
-	int get_key() {return this->key;}
-	int get_height() {return this==nullptr? 0 : this->height;}
-	avl_node* get_left() {return this->left;}
-	avl_node* get_right() {return this->right;}
-	int get_b_factor() {return this->b_factor;}
-	
-	// set函数
-	void set_key(int key) {this->key = key;}
-	void set_left(avl_node* left) {this->left = left;}
-	void set_right(avl_node* right) {this->right = right;}
-	// void set_height(int height) {this->height = height;}
-	// void set_b_factor(int b_factor) {this->b_factor = b_factor;}
-};
-
-class avl_tree{
-private:
-	avl_node* root; // 树根节点
-
-	avl_node* search_node(avl_node* cur, int key); // 查找对应键的节点
-	avl_node* insert_node(avl_node* cur, int new_key); // 递归插入新节点
-	void destroy_tree(avl_node* cur); // 递归销毁树所分配的节点
-	avl_node* delete_node(avl_node* cur, int key); // 递归删除节点
-	avl_node* get_sub_tree_min(avl_node* cur); // 获得以当前节点为根节点的子树中，最小键值的节点
-
-public:
-	// 构造函数
-	avl_tree() {this->root = nullptr;}
-	// avl_tree(avl_node* root): root(root) {}
-	avl_tree(int key) {this->root = new avl_node(key);}
-
-	// 析构函数
-	~avl_tree();
-
-	// get函数
-	avl_node* get_root() {return this->root;}
-
-	avl_node* insert(int new_key); // 插入新节点
-	avl_node* rebanlance(avl_node* cur); // 针对当前节点为根节点的子树进行重平衡
-	avl_node* turn_left_left(avl_node* cur); // LL
-	avl_node* turn_right_right(avl_node* cur); // RR
-	avl_node* turn_left_right(avl_node* cur); // LR
-	avl_node* turn_right_left(avl_node* cur); // RL
-
-	void update_height_b_factor(avl_node* cur); // 对于指定节点的子树，更新树高和平衡因子
-
-	avl_node* search(int key); // 查找对应键的节点
-	void del(int key); // 删除对应的节点
-	void display_tree_attr(); // 展示树的属性
-	void display_layers(); // 层序遍历，展示树的所有元素 
-	void insert_batch(vector<int>& arr); // 一次性插入一批数据 
-};
 
 /**
  * 递归销毁树所分配的节点
@@ -403,33 +332,4 @@ void avl_tree::display_layers(){
 
 int max(int a, int b){
 	return a >= b ? a : b;
-}
-
-int main(){
-
-	avl_tree* t = new avl_tree(); // root = nullptr
-	
-//	t->insert(12);
-//	t->insert(13);
-//	t->display_tree_attr();
-//	
-//	t->insert(14);
-//	t->display_tree_attr();
-//	t->display_layers(); 
-//	
-//	t->del(14);
-//	t->display_tree_attr(); 
-
-	vector<int> arr = {10, 5, 16, 20, 11};
-	t->insert_batch(arr); // 尝试插入批数据 
-	t->display_layers(); // 层序展示 
-	
-	t->del(16);
-	t->display_layers();
-	
-	t->del(5);
-	t->display_layers();
-
-	delete t;
-	return 0;
 }
