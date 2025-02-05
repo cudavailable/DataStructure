@@ -310,7 +310,7 @@ avl_node* avl_tree::get_sub_tree_min(avl_node* cur){
  */
 avl_node* avl_tree::delete_node(avl_node* cur, int key){
 	if(cur == nullptr){
-		cout << "未找到对应键值的节点！" << endl;
+		cerr << "未找到对应键值的节点！" << endl;
 		return nullptr;
 	}
 
@@ -334,7 +334,7 @@ avl_node* avl_tree::delete_node(avl_node* cur, int key){
 			// 非叶子节点，需要用右子树中最小节点代替之
 			avl_node* temp = get_sub_tree_min(cur->right);
 			cur->key = temp->key;
-			delete temp;
+//			delete temp;
 
 			// update_height_b_factor(cur);
 			// return cur;
@@ -360,7 +360,7 @@ void avl_tree::del(int key){
  */
 void avl_tree::display_tree_attr(){
 	if(this->get_root() == nullptr){
-		cout << "树的根节点尚为空，需要先插入！" << endl;
+		cerr << "树的根节点尚为空，需要先插入！" << endl;
 	} 
 	
 	cout << "--------展示AVL树的属性--------" << endl;	
@@ -375,7 +375,7 @@ void avl_tree::display_tree_attr(){
  */
 void avl_tree::display_layers(){
 	if(this->get_root() == nullptr){
-		cout << "树的根节点尚为空，需要先插入！" << endl;
+		cerr << "树的根节点尚为空，需要先插入！" << endl;
 	} 
 	
 	queue<avl_node*> que;
@@ -433,11 +433,11 @@ int main(){
 	t->insert_batch(arr); // 尝试插入批数据 
 	t->display_layers(); // 层序展示 
 	
-	t->del(11);
+	t->del(16);
 	t->display_layers();
 	
-	t->del(5);
-	t->display_layers();
+//	t->del(5);
+//	t->display_layers();
 
 	delete t;
 	return 0;
