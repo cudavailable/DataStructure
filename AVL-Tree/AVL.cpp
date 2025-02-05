@@ -1,4 +1,7 @@
 #include<iostream>
+#include<stack>
+#include<vector>
+#include<queue>
 using namespace std;
 
 /**
@@ -73,6 +76,9 @@ public:
 
 	avl_node* search(int key); // 查找对应键的节点
 	void del(int key); // 删除对应的节点
+	void display_tree_attr(); // 展示树的属性
+	void display_layers(); // 层序遍历，展示树的所有元素 
+	void insert_batch(vector<int>& arr); // 一次性插入一批数据 
 };
 
 /**
@@ -154,6 +160,16 @@ avl_node* avl_tree::insert_node(avl_node* cur, int new_key){
 avl_node* avl_tree::insert(int new_key){
 	this->root = insert_node(this->root, new_key); // 更新根节点 
 	return this->root;
+}
+
+/**
+ * 一次性插入一批数据
+ */
+void avl_tree::insert_batch(vector<int>& arr){
+	for(int& x : arr){
+		this->insert(x);
+	}
+	cout << "成功插入批数据" << endl;
 }
 
 /**
@@ -330,7 +346,6 @@ avl_node* avl_tree::delete_node(avl_node* cur, int key){
 	this->update_height_b_factor(cur);
 
 	return this->rebanlance(cur);
-
 }
 
 /**
@@ -340,31 +355,89 @@ void avl_tree::del(int key){
 	this->root = this->delete_node(this->root, key);
 }
 
+/**
+ * 展示树的属性 
+ */
+void avl_tree::display_tree_attr(){
+	if(this->get_root() == nullptr){
+		cout << "树的根节点尚为空，需要先插入！" << endl;
+	} 
+	
+	cout << "--------展示AVL树的属性--------" << endl;	
+	cout << "root key: " << this->get_root()->get_key() << endl;
+	cout << "root height: " << this->get_root()->get_height() << endl;
+	cout << "root b_factor: " << this->get_root()->get_b_factor() << endl;
+	cout << "-------------------------------" << endl << endl;	
+}
+
+/**
+ * 层序遍历，展示树的元素 
+ */
+void avl_tree::display_layers(){
+	if(this->get_root() == nullptr){
+		cout << "树的根节点尚为空，需要先插入！" << endl;
+	} 
+	
+	queue<avl_node*> que;
+	que.push(this->root); // 压入根节点 
+	
+	cout << "---------层序遍历AVL树---------" << endl;
+	
+	while(!que.empty()){
+		avl_node* cur = que.front(); // 取得队首的节点
+		que.pop();
+		
+//		if(cur == nullptr){
+//			cout << "Nil" << " ";
+//			continue;
+//		}else{
+//			cout << cur->get_key() << " ";	
+//		}
+//		que.push(cur->left);
+//		que.push(cur->right);
+
+		cout << cur->get_key() << " ";
+		
+		if(cur->left != nullptr){
+			que.push(cur->left);
+		} 
+		if(cur->right != nullptr){
+			que.push(cur->right);
+		}
+		 
+	}
+	cout << endl;
+	cout << "-------------------------------" << endl << endl;
+}
+
 int max(int a, int b){
 	return a >= b ? a : b;
 }
 
 int main(){
-	// avl_node* n1 = new avl_node(12);
-	// std::cout << n1->get_key() << " " << n1->get_height() << endl;
-	// avl_node n1 = nullptr;
-	// n1->getheight()
-	// cout<< "n1's height: " << n1->get_height() << endl;
-	// cout<< "n1's left subtree's height: "<< n1->get_left()->get_height() << endl;
 
 	avl_tree* t = new avl_tree(); // root = nullptr
-	t->insert(12);
-	t->insert(13);
+	
+//	t->insert(12);
+//	t->insert(13);
+//	t->display_tree_attr();
+//	
 //	t->insert(14);
-	cout << t->get_root()->get_key() << endl;
-	cout << t->get_root()->get_height() << endl;
-	cout << t->get_root()->get_b_factor() << endl;
-	t->insert(14);
+//	t->display_tree_attr();
+//	t->display_layers(); 
+//	
+//	t->del(14);
+//	t->display_tree_attr(); 
 
-	cout << "---------------" << endl;	
-	cout << t->get_root()->get_key() << endl;
-	cout << t->get_root()->get_height() << endl;
-	cout << t->get_root()->get_b_factor() << endl;
+	vector<int> arr = {10, 5, 16, 20, 11};
+	t->insert_batch(arr); // 尝试插入批数据 
+	t->display_layers(); // 层序展示 
+	
+	t->del(11);
+	t->display_layers();
+	
+	t->del(5);
+	t->display_layers();
 
 	delete t;
 	return 0;
