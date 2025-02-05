@@ -47,6 +47,8 @@ private:
 	avl_node* search_node(avl_node* cur, int key); // 查找对应键的节点
 	avl_node* insert_node(avl_node* cur, int new_key); // 递归插入新节点
 	void destroy_tree(avl_node* cur); // 递归销毁树所分配的节点
+	avl_node* delete_node(avl_node* cur, int key); // 递归删除节点
+	avl_node* get_sub_tree_min(avl_node* cur); // 获得以当前节点为根节点的子树中，最小键值的节点
 
 public:
 	// 构造函数
@@ -70,6 +72,7 @@ public:
 	void update_height_b_factor(avl_node* cur); // 对于指定节点的子树，更新树高和平衡因子
 
 	avl_node* search(int key); // 查找对应键的节点
+	void del(int key); // 删除对应的节点
 };
 
 /**
@@ -269,6 +272,72 @@ avl_node* avl_tree::search_node(avl_node* cur, int key){
  */
 avl_node* avl_tree::search(int key){
 	return this->search_node(this->root, key);
+}
+
+/**
+ * 获得以当前节点为根节点的子树中，最小键值的节点
+ */
+avl_node* avl_tree::get_sub_tree_min(avl_node* cur){
+	if(cur == nullptr){
+		return nullptr;
+	}
+
+	while(cur->left != nullptr){
+		cur = cur->left;
+	}
+
+	return cur;
+}
+
+/**
+ * 递归删除节点
+ */
+avl_node* avl_tree::delete_node(avl_node* cur, int key){
+	if(cur == nullptr){
+		cout << "未找到对应键值的节点！" << endl;
+		return nullptr;
+	}
+
+	if(key < cur->key){
+		cur->left = delete_node(cur->left, key);
+	}else if(key > cur->key){
+		cur->right = delete_node(cur->right, key);
+	}else{
+		// key == cur->key  找到要删除的节点
+		if(cur->left == nullptr){
+			// 包含两种情况：当前节点只有一个右子节点、当前是叶子节点
+			avl_node* temp = cur->right;
+			delete cur;
+			return temp;
+		}else if(cur->right == nullptr){
+			// 只有一个左子节点
+			avl_node* temp = cur->left;
+			delete cur;
+			return temp;
+		}else{
+			// 非叶子节点，需要用右子树中最小节点代替之
+			avl_node* temp = get_sub_tree_min(cur->right);
+			cur->key = temp->key;
+			delete temp;
+
+			// update_height_b_factor(cur);
+			// return cur;
+			cur->right = delete_node(cur->right, cur->key);
+		}
+
+	}
+
+	this->update_height_b_factor(cur);
+
+	return this->rebanlance(cur);
+
+}
+
+/**
+ * 删除对应的节点
+ */
+void avl_tree::del(int key){
+	this->root = this->delete_node(this->root, key);
 }
 
 int max(int a, int b){
