@@ -334,10 +334,7 @@ avl_node* avl_tree::delete_node(avl_node* cur, int key){
 			// 非叶子节点，需要用右子树中最小节点代替之
 			avl_node* temp = get_sub_tree_min(cur->right);
 			cur->key = temp->key;
-//			delete temp;
 
-			// update_height_b_factor(cur);
-			// return cur;
 			cur->right = delete_node(cur->right, cur->key);
 		}
 
@@ -384,29 +381,23 @@ void avl_tree::display_layers(){
 	cout << "---------层序遍历AVL树---------" << endl;
 	
 	while(!que.empty()){
-		avl_node* cur = que.front(); // 取得队首的节点
-		que.pop();
+		int size = que.size();
 		
-//		if(cur == nullptr){
-//			cout << "Nil" << " ";
-//			continue;
-//		}else{
-//			cout << cur->get_key() << " ";	
-//		}
-//		que.push(cur->left);
-//		que.push(cur->right);
-
-		cout << cur->get_key() << " ";
-		
-		if(cur->left != nullptr){
-			que.push(cur->left);
-		} 
-		if(cur->right != nullptr){
-			que.push(cur->right);
+		for(int i=0; i < size; i++){
+			avl_node* cur = que.front(); // 取得队首的节点
+			que.pop();
+			cout << cur->get_key() << " ";
+			
+			if(cur->left != nullptr){
+				que.push(cur->left);
+			} 
+			if(cur->right != nullptr){
+				que.push(cur->right);
+			}	
 		}
-		 
+	
+		cout << endl;	 
 	}
-	cout << endl;
 	cout << "-------------------------------" << endl << endl;
 }
 
@@ -436,8 +427,8 @@ int main(){
 	t->del(16);
 	t->display_layers();
 	
-//	t->del(5);
-//	t->display_layers();
+	t->del(5);
+	t->display_layers();
 
 	delete t;
 	return 0;
