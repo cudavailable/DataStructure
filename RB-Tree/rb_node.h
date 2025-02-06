@@ -20,6 +20,10 @@ private:
     Color color = RED; // default: red
 
 public:
+    rb_node() {}
+
+    rb_node(int key, Value Value): key(key), value(value), left(nullptr), right(nullptr), parent(nullptr), color(Color::RED) {}
+
     /**
      * whether it's a left child of some node
      */
