@@ -10,12 +10,15 @@ int main(){
     t->put(3, "what");
     t->put(2, "are");
     
-    string* s = t->get(3); 
-    if(s == nullptr){
-    	cout << "Null is found!" << endl;
-    }else{
-    	cout << "Content: " << *s << endl;
-    }
+//    string* s = t->get(3); 
+//    if(s == nullptr){
+//    	cout << "Null is found!" << endl;
+//    }else{
+//    	cout << "Content: " << *s << endl;
+//    }
+
+	cout << "Empty: " << t->empty() << endl;
+	cout << "Size: " << t->size() << endl;
     
 //    t->display();
     

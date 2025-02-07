@@ -280,5 +280,13 @@ public:
         cout << "key(" << key << ") is not found!" << endl;
         return false;
     }
+    
+    bool empty(){
+    	return this->count == 0;
+    }
+    
+    int size(){
+    	return this->count;
+    }
 
 };
