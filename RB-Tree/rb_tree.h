@@ -12,6 +12,9 @@ private:
     rb_node<Value>* root; // root of red-black tree
     int count; // the number of nodes
 
+    /**
+     * destroy all the nodes in post-order
+     */
     void destroy_node(rb_node<Value>* cur){
         if(cur == nullptr){
             return ;
@@ -21,25 +24,6 @@ private:
         destroy_node(cur->right);
         delete cur;
         this->count--;
-    }
-
-public:
-    rb_tree(): root(nullptr), count(0) {}
-
-    ~rb_tree() {this->destroy_node(this->root); cout << "Calling the destructor" << endl;}
-
-    /**
-     * whether the node is red
-     */
-    bool is_red(rb_node<Value>* cur){
-        return cur!=nullptr && cur->color==Color::RED;
-    }
-
-    /**
-     * whether the node is black
-     */
-    bool is_black(rb_node<Value>* cur){
-        return cur==nullptr || cur->color==Color::BLACK;
     }
 
     /**
@@ -97,48 +81,6 @@ public:
     }
 
     /**
-     * INSERT/UPDATE a pair of <key, value>
-     */
-    void put(int key, Value value){
-        rb_node<Value>* p = this->root;
-        rb_node<Value>* parent = nullptr;
-
-        while(p != nullptr){
-            parent = p;
-            
-            if(key < p->key){
-                p = p->left;
-            }else if(key > p->key){
-                p = p->right;
-            }else{
-                // UPDATE
-                p->value = value;
-                return ;
-            }
-        }
-
-        // INSERT
-        rb_node<Value>* inserted = new rb_node<Value>(key, value);
-        this->count++;
-        
-        if(parent == nullptr){
-            // empty tree
-            this->root = inserted;
-        }else if (key < parent->key){
-            parent->left = inserted;
-            inserted->parent = parent;
-        }else{
-            parent->right = inserted;
-            inserted->parent = parent;
-        }
-
-
-        // fix red-next-to-red after insertion
-        this->fix_red_red(inserted);
-    }
-
-
-    /**
      * fix the problem of red-next-to-red
      */
     void fix_red_red(rb_node<Value>* cur){
@@ -193,6 +135,243 @@ public:
         
     }
 
+    /**
+     * return remaining parts given deleted node
+     */
+    rb_node<Value>* find_replaced(rb_node<Value>* deleted){
+        if(deleted->left == nullptr && delete->right == nullptr){
+            return nullptr;
+        }
+
+        if(delete->left == nullptr){
+            return deleted->right;
+        }
+
+        if(delete->right == nullptr){
+            return deleted->left;
+        }
+
+        // non-leaf node
+        rb_node<Value>* s = deleted->right;
+        while (s->left != nullptr){
+            s = s->left;
+        }
+
+        return s;
+    }
+
+    /**
+     * fix the problem of lack-of-black
+     */
+    void fix_double_black(rb_node<Value>* x){
+        if(x == this->root){
+            return ;
+        }
+
+        rb_node<Value>* parent = x->parent;
+        rb_node<Value>* sibling = x->sibling();
+        
+        // Case3: red sibling
+        if(this->is_red(sibling)){ 
+            if(x->is_left_child()){
+                this->left_rotate(parent);
+            }else{
+                this->right_rotate(parent);
+            }
+
+            parent->color = Color::RED;
+            sibling->color = Color::BLACK;
+
+            this->fix_double_black(x);
+            return ;
+        }
+
+        if(sibling != nullptr){
+            // Case4: black sibling with two black sons
+            if(this->is_black(sibling->left) && this->is_black(sibling->right)){
+                sibling->color = Color::RED;
+                if(this->is_red(parent)){
+                    parent->color = Color::BLACK;
+                }else{
+                    this->fix_double_black(parent);
+                }
+
+            }
+            // Case5: black sibling with red son
+            else{
+                // LL
+                if(sibling->is_left_child() && this->is_red(sibling->left)){
+                    this->right_rotate(parent);
+                    sibling->left->color = Color::BLACK;
+                    sibling->color = parent->color;
+                    parent->color = Color::BLACK;
+                }
+
+                // LR
+                else if(sibling->is_left_child() && this->is_red(sibling->right)){
+                    sibling->right->color = parent->color;
+                    this->left_rotate(sibling);
+                    this->right_rotate(parent);
+                    parent->color = Color::BLACK;
+                }
+
+                // RL
+                else if(!sibling->is_left_child() && this->is_red(sibling->left)){
+                    sibling->left->color = parent->color;
+                    this->right_rotate(sibling);
+                    this->left_rotate(parent);
+                    parent->color = Color::BLACK;
+                }
+
+                // RR
+                else if(!sibling->is_left_child() && this->is_red(sibling->right)){
+                    this->left_rotate(parent);
+                    sibling->right->color = Color::BLACK;
+                    sibling->color = parent->color;
+                    parent->color = Color::BLACK;
+                }
+            }
+        }else{
+            this->fix_double_black(parent);
+        }
+        
+    }
+
+    /**
+     * remove a node which actually exists given a pointer 
+     */
+    void remove_node(rb_node<Value>* deleted){
+        rb_node<Value>* replaced = this->find_replaced(deleted);
+        rb_node<Value>* parent = deleted->parent;
+
+        if(replaced == nullptr){ // deleted node without children
+
+            if(deleted == this->root){ // deleted node is root 
+                this->root = nullptr;
+                delete deleted;
+            }else{ // is not root
+
+                if(this->is_black(deleted)){ // black node
+                    this->fix_double_black(deleted);
+                }else{ // red node
+                    // don't need to handle it
+                }
+
+                if(deleted->is_left_child()){
+                    parent->left = nullptr;
+                }else{
+                    parent->right = nullptr;
+                }
+
+                delete deleted;
+            }
+
+            return ;
+        }
+
+        if(deleted->left == nullptr || deleted->right == nullptr){ // with only one chlid
+
+            if(deleted == this->root){ // deleted node is root 
+                root->key = replaced->key;
+                root->value = replaced->value;
+                root->left = nullptr;
+                root->right = nullptr;
+
+                delete replaced;
+            }else{ // is not root
+                if(deleted->is_left_child()){
+                    parent->left = replaced;
+                }else{
+                    parent->right = replaced;
+                }
+
+                replaced->parent = parent;
+
+                // deleted node could only be a black node
+                if(this->is_black(deleted) && this->is_black(replaced)){
+                    this->fix_double_black(replaced);
+                }else{ 
+                    replaced->color = Color::BLACK; 
+                }
+
+                delete deleted;
+            }
+
+            return ;
+        }
+
+        // with two children
+        int t = deleted->key;
+        deleted->key = replaced->key;
+        replaced->key = t;
+
+        Value v = deleted->value;
+        deleted->value = replaced->value;
+        replaced->value = v;
+
+        remove_node(replaced);
+    }
+
+public:
+    rb_tree(): root(nullptr), count(0) {}
+
+    ~rb_tree() {this->destroy_node(this->root); cout << "Calling the destructor" << endl;}
+
+    /**
+     * whether the node is red
+     */
+    bool is_red(rb_node<Value>* cur){
+        return cur!=nullptr && cur->color==Color::RED;
+    }
+
+    /**
+     * whether the node is black
+     */
+    bool is_black(rb_node<Value>* cur){
+        return cur==nullptr || cur->color==Color::BLACK;
+    }
+
+    /**
+     * INSERT/UPDATE a pair of <key, value>
+     */
+    void put(int key, Value value){
+        rb_node<Value>* p = this->root;
+        rb_node<Value>* parent = nullptr;
+
+        while(p != nullptr){
+            parent = p;
+            
+            if(key < p->key){
+                p = p->left;
+            }else if(key > p->key){
+                p = p->right;
+            }else{
+                // UPDATE
+                p->value = value;
+                return ;
+            }
+        }
+
+        // INSERT
+        rb_node<Value>* inserted = new rb_node<Value>(key, value);
+        this->count++;
+        
+        if(parent == nullptr){
+            // empty tree
+            this->root = inserted;
+        }else if (key < parent->key){
+            parent->left = inserted;
+            inserted->parent = parent;
+        }else{
+            parent->right = inserted;
+            inserted->parent = parent;
+        }
+
+
+        // fix red-next-to-red after insertion
+        this->fix_red_red(inserted);
+    }
+    
     /**
      * print all nodes in order of layers
      */
@@ -281,12 +460,52 @@ public:
         return false;
     }
     
+    /**
+     * whether rb-tree is empty
+     */
     bool empty(){
     	return this->count == 0;
     }
     
+    /**
+     * return the count of nodes
+     */
     int size(){
     	return this->count;
+    }
+
+    /**
+     * return the node given specific key (nullptr for not found)
+     */
+    rb_node<Value>* find(int key){
+        rb_node<Value>* p = this->root;
+        while(p != nullptr){
+            if(key < p->key){
+                p = p->left;
+            }else if(key > p->key){
+                p = p->right;
+            }else{
+                return p;
+            }
+        }
+
+        return nullptr;
+    }
+
+    /**
+     * remove a node given a specific key
+     */
+    void remove(int key){
+        // find the node
+        rb_node<Value>* deleted = this->find(key);
+
+        if(deleted == nullptr){
+            // No such node
+            return nullptr;
+        }
+
+        // remove a node literally
+        remove_node(deleted);
     }
 
 };
