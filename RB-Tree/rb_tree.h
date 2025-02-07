@@ -1,5 +1,8 @@
 #pragma once
 
+#include<iostream>
+#include<queue>
+
 #include "rb_node.h"
 
 template<typename Value>
@@ -9,13 +12,13 @@ private:
     rb_node<Value>* root; // root of red-black tree
     int count; // the number of nodes
 
-    void distroy_node(rb_node<Value>* cur){
+    void destroy_node(rb_node<Value>* cur){
         if(cur == nullptr){
             return ;
         }
 
-        distroy_node(cur->left);
-        distroy_node(cur->right);
+        destroy_node(cur->left);
+        destroy_node(cur->right);
         delete cur;
         this->count--;
     }
@@ -23,7 +26,7 @@ private:
 public:
     rb_tree(): root(nullptr), count(0) {}
 
-    ~rb_node() {this->distroy_node(this->root); cout << "调用红黑树的析构函数" << endl}
+    ~rb_tree() {this->destroy_node(this->root); cout << "Calling the destructor" << endl;}
 
     /**
      * whether the node is red
@@ -43,17 +46,17 @@ public:
      * LL
      */
     void right_rotate(rb_node<Value>* cur){
-        rb_node<Value>* t1 = cur->right;
-        rb_node<Value>* t2 = t1->left;
+        rb_node<Value>* t1 = cur->left;
+        rb_node<Value>* t2 = t1->right;
         rb_node<Value>* parent = cur->parent;
 
         if(t2 != nullptr){
             t2->parent = cur;
         }
 
-        cur->right = t2;
+        cur->left = t2;
         cur->parent = t1;
-        t1->left = cur;
+        t1->right = cur;
         t1->parent = parent;
 
         if(parent == nullptr){
@@ -70,17 +73,17 @@ public:
      * RR
      */
     void left_rotate(rb_node<Value>* cur){
-        rb_node<Value>* t1 = cur->left;
-        rb_node<Value>* t2 = t1->right;
+        rb_node<Value>* t1 = cur->right;
+        rb_node<Value>* t2 = t1->left;
         rb_node<Value>* parent = cur->parent;
 
         if(t2 != nullptr){
             t2->parent = cur;
         }
 
-        cur->left = t2;
+        cur->right = t2;
         cur->parent = t1;
-        t1->right = cur;
+        t1->left = cur;
         t1->parent = parent;
 
         if(parent == nullptr){
@@ -116,6 +119,7 @@ public:
 
         // INSERT
         rb_node<Value>* inserted = new rb_node<Value>(key, value);
+        this->count++;
         
         if(parent == nullptr){
             // empty tree
@@ -187,6 +191,44 @@ public:
             this->left_rotate(grandparent);
         }
         
+    }
+
+    /**
+     * print all nodes in order of layers
+     */
+    void display(){
+        if(this->root == nullptr){
+            cout << "The root of the tree is empty, please insert a node!" << endl;
+            return ;
+        }
+
+        cout << "-----------Print Info-----------" << endl;
+
+        queue<rb_node<Value>*> que;
+        que.push(this->root);
+
+        while(!que.empty()){
+            int size = que.size();
+
+            for(int i=0; i < size; i++){
+                rb_node<Value>* cur = que.front();
+                que.pop();
+
+                cur->print(); // >>12(r)
+                cout << " ";
+
+                if(cur->left != nullptr){
+                    que.push(cur->left);
+                }
+                if(cur->right != nullptr){
+                    que.push(cur->right);
+                }
+            }
+            cout << endl;
+        }
+
+        cout << "Total count of nodes: " << this->count << endl;
+        cout << "--------------------------------" << endl;
     }
 
 };
