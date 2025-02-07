@@ -10,7 +10,14 @@ int main(){
     t->put(3, "what");
     t->put(2, "are");
     
-    t->display();
+    string* s = t->get(3); 
+    if(s == nullptr){
+    	cout << "Null is found!" << endl;
+    }else{
+    	cout << "Content: " << *s << endl;
+    }
+    
+//    t->display();
     
     delete t;
 

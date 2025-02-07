@@ -231,4 +231,54 @@ public:
         cout << "--------------------------------" << endl;
     }
 
+    /**
+     * get value's pointer by provided key (nullptr for not found)
+     */
+    Value* get(int key){
+        if(this->root == nullptr){
+            cout << "The root of the tree is empty, please insert a node!" << endl;
+            return nullptr;
+        }
+
+        rb_node<Value>* p = this->root;
+        while(p != nullptr){
+            if(key < p->key){
+                p = p->left;
+            }else if(key > p->key){
+                p = p->right;
+            }else{
+                cout << "key(" << key << ") is found, value("<< p->value << ")" << endl;
+                return (Value*)(&p->value);
+            }
+        }
+
+        cout << "key(" << key << ") is not found!" << endl;
+        return nullptr;
+    }
+    
+    /**
+     * whether contains a specific key (false for not found)
+     */
+    bool contains(int key){
+        if(this->root == nullptr){
+            cout << "The root of the tree is empty, please insert a node!" << endl;
+            return false;
+        }
+
+        rb_node<Value>* p = this->root;
+        while(p != nullptr){
+            if(key < p->key){
+                p = p->left;
+            }else if(key > p->key){
+                p = p->right;
+            }else{
+                cout << "key(" << key << ") is found" << endl;
+                return true;
+            }
+        }
+
+        cout << "key(" << key << ") is not found!" << endl;
+        return false;
+    }
+
 };
