@@ -139,15 +139,15 @@ private:
      * return remaining parts given deleted node
      */
     rb_node<Value>* find_replaced(rb_node<Value>* deleted){
-        if(deleted->left == nullptr && delete->right == nullptr){
+        if(deleted->left == nullptr && deleted->right == nullptr){
             return nullptr;
         }
 
-        if(delete->left == nullptr){
+        if(deleted->left == nullptr){
             return deleted->right;
         }
 
-        if(delete->right == nullptr){
+        if(deleted->right == nullptr){
             return deleted->left;
         }
 
@@ -279,6 +279,13 @@ private:
 
                 delete replaced;
             }else{ // is not root
+                // deleted node could only be a black node
+                if(this->is_black(deleted) && this->is_black(replaced)){
+                    this->fix_double_black(replaced);
+                }else{ // replaced is red, just turn black
+                    replaced->color = Color::BLACK; 
+                }
+
                 if(deleted->is_left_child()){
                     parent->left = replaced;
                 }else{
@@ -286,13 +293,6 @@ private:
                 }
 
                 replaced->parent = parent;
-
-                // deleted node could only be a black node
-                if(this->is_black(deleted) && this->is_black(replaced)){
-                    this->fix_double_black(replaced);
-                }else{ 
-                    replaced->color = Color::BLACK; 
-                }
 
                 delete deleted;
             }
@@ -377,7 +377,7 @@ public:
      */
     void display(){
         if(this->root == nullptr){
-            cout << "The root of the tree is empty, please insert a node!" << endl;
+            cout << "The root of the tree is empty, please insert a node!" << endl << endl;
             return ;
         }
 
@@ -407,7 +407,7 @@ public:
         }
 
         cout << "Total count of nodes: " << this->count << endl;
-        cout << "--------------------------------" << endl;
+        cout << "--------------------------------" << endl << endl;
     }
 
     /**
@@ -501,10 +501,12 @@ public:
 
         if(deleted == nullptr){
             // No such node
-            return nullptr;
+            cout << "No such node whose key is (" << key << ")!" << endl;
+            return ;
         }
 
         // remove a node literally
+        this->count--;
         remove_node(deleted);
     }
 
