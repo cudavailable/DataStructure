@@ -107,10 +107,33 @@ void test5(rb_tree<string>* t){
 //    t->display();
 }
 
+// 1.delete red node with 2 son
+// 2.delete black node with 1 red son
+void test6(rb_tree<string>* t){
+	t->put(8, "ok");
+    t->put(3, "what");
+    t->put(2, "are");
+    t->put(5, "you");
+    t->put(12, "do");
+    t->put(20, "us");
+    t->put(30, "we");
+  	t->put(4, "me");
+	t->put(40, "no");
+
+	t->display();
+	
+	// test
+	t->remove(20);
+	t->display(); 
+	
+	t->get(30);
+	t->get(40);
+}
+
 int main(){
     rb_tree<string>* t = new rb_tree<string>();
 
-    test4(t);
+    test6(t);
     
     delete t;
 

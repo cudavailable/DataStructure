@@ -73,5 +73,18 @@ public:
     void print(){
         cout << this->key << "(" << (this->color==Color::BLACK? "b" : "r") << ")"; // "12(r)" "12(b)"
     }
-
+    
+//    /**
+//     * set node's color black
+//     */
+//    void set_black(){
+//    	this->color = Color::BLACK;
+//    }
+    
+//    /**
+//     * set node's color red
+//     */
+//    void set_red(){
+//    	this->color = Color::RED;
+//    }
 };

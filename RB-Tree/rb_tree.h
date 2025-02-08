@@ -281,6 +281,7 @@ private:
             }else{ // is not root
                 // deleted node could only be a black node
                 if(this->is_black(deleted) && this->is_black(replaced)){
+                	// MAY NEVER COME OUT
                     this->fix_double_black(replaced);
                 }else{ // replaced is red, just turn black
                     replaced->color = Color::BLACK; 
