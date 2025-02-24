@@ -8,7 +8,8 @@ int main(){
     vector<int> arr = {3, 4, 10, 384, 943, 23, 21, -1, 200, -163};
 	//bubble_sort(arr);
 	//choice_sort(arr);
-	insert_sort(arr);
+	//insert_sort(arr);
+	merge_sort(arr);
 	display(arr);
     return 0;
 }

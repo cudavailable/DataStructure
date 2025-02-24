@@ -10,13 +10,17 @@ enum Order{
 
 void swap(int& a, int& b);
 
+void merge(vector<int>& arr, int left, int mid, int right);
+
+void m_sort(vector<int>& arr, int left, int right);
+
 vector<int>& bubble_sort(vector<int>& arr);
 
 vector<int>& choice_sort(vector<int>& arr);
 
 vector<int>& insert_sort(vector<int>& arr);
 
-vector<int> merge_sort(vector<int> arr);
+vector<int>& merge_sort(vector<int>& arr);
 
 vector<int> quick_sort(vector<int> arr);
 
