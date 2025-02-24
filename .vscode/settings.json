@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "stack": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "vector": "cpp",
+        "mysort.h": "c",
+        "exception": "c"
     }
 }
