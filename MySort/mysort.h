@@ -4,9 +4,15 @@
 #include <vector>
 using std::vector;
 
-vector<int> bubble_sort(vector<int> arr);
+enum Order{
+	ASC, DESC
+};
 
-vector<int> choice_sort(vector<int> arr);
+void swap(int& a, int& b);
+
+vector<int>& bubble_sort(vector<int>& arr);
+
+vector<int>& choice_sort(vector<int>& arr);
 
 vector<int> insert_sort(vector<int> arr);
 
