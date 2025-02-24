@@ -83,8 +83,32 @@ vector<int>& merge_sort(vector<int>& arr){
 	m_sort(arr, 0, arr.size()-1);
 }
 
-vector<int> quick_sort(vector<int> arr){
+int partition(vector<int>& arr, int left, int right){
+	int pivot = arr[right];
+	int i = left-1;
 	
+	for(int j=left; j < right; j++){
+		if(arr[j] <= pivot){
+			i++;
+			swap(arr[i], arr[j]);
+		}
+	}
+	
+	swap(arr[i+1], arr[right]);
+	return i+1;
+}
+
+void q_sort(vector<int>& arr, int left, int right){
+	if(left < right){
+		int pivot = partition(arr, left, right);
+		q_sort(arr, left, pivot-1);
+		q_sort(arr, pivot+1, right);
+	}
+}
+
+vector<int>& quick_sort(vector<int>& arr){
+	// sort index: [0, size-1]
+	q_sort(arr, 0, arr.size()-1);
 }
 
 vector<int> radix_sort(vector<int> arr){

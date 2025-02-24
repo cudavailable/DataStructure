@@ -9,7 +9,7 @@ int main(){
 	//bubble_sort(arr);
 	//choice_sort(arr);
 	//insert_sort(arr);
-	merge_sort(arr);
+	quick_sort(arr);
 	display(arr);
     return 0;
 }
