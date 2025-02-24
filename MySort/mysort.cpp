@@ -35,8 +35,19 @@ vector<int>& choice_sort(vector<int>& arr){
 	return arr;
 }
 
-vector<int> insert_sort(vector<int> arr){
+vector<int>& insert_sort(vector<int>& arr){
+	for(int i=1; i < arr.size(); i++){
+		int tmp = arr[i]; // keep the value
+		int j = i-1;
+		
+		while(j >= 0 && arr[j]>tmp){ // compare arr[j], tmp-value
+			arr[j+1] = arr[j];
+			j--;
+		}
+		arr[j+1] = tmp;
+	}
 	
+	return arr;
 }
 
 vector<int> merge_sort(vector<int> arr){
