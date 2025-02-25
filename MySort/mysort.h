@@ -18,18 +18,23 @@ int partition(vector<int>& arr, int left, int right);
 
 void q_sort(vector<int>& arr, int left, int right);
 
-vector<int>& bubble_sort(vector<int>& arr);
+int get_max_digit(vector<int> arr);
 
-vector<int>& choice_sort(vector<int>& arr);
+void exp_sort(vector<int>& arr, int exp);
 
-vector<int>& insert_sort(vector<int>& arr);
+/* SORT */
+void bubble_sort(vector<int>& arr);
 
-vector<int>& merge_sort(vector<int>& arr);
+void choice_sort(vector<int>& arr);
 
-vector<int>& quick_sort(vector<int>& arr);
+void insert_sort(vector<int>& arr);
 
-vector<int>& radix_sort(vector<int>& arr);
+void merge_sort(vector<int>& arr);
 
-vector<int>& bucket_sort(vector<int>& arr);
+void quick_sort(vector<int>& arr);
+
+void radix_sort(vector<int>& arr);
+
+void bucket_sort(vector<int>& arr);
 
 void display(const vector<int>& arr);
